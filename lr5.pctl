@@ -1,0 +1,24 @@
+const int K;
+
+// deadlock freeness
+filter(forall, "hungry"=>P>=1 [ F "eat" ])
+
+// no resource starvation
+filter(forall, "hungry1"=>P>=1 [ F "eat1" ])
+
+filter(forall, "hungry2"=>P>=1 [ F "eat2" ])
+
+filter(forall, "hungry3"=>P>=1 [ F "eat3" ])
+
+filter(forall, "hungry4"=>P>=1 [ F "eat4" ])
+
+filter(forall, "hungry5"=>P>=1 [ F "eat5" ])
+
+filter(state, Pmax=? [ F<=K "eat" ], "notthink")
+
+filter(state, Pmin=? [ F<=K "eat" ], "notthink")
+
+R{"time_passed"}min=? [F "eat"]
+
+R{"time_passed"}max=? [F "eat"]
+

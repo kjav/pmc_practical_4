@@ -1,0 +1,106 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{float}
+\usepackage[latin1]{inputenc}
+
+\definecolor{dkgreen}{rgb}{0, 0.6, 0}
+\definecolor{gray}{rgb}{0.5, 0.5, 0.5}
+\definecolor{mauve}{rgb}{0.58, 0, 0.82}
+
+\lstdefinelanguage{pctl}
+  {
+    morekeywords={label,R,F,min,max},
+    morekeywords=[2]{phase},
+    sensitive=false,
+    keywordstyle=[2]\color{red},
+    morecomment=[l]{//},
+    morestring=[b]"
+  }
+
+\lstdefinelanguage{prism}
+  {
+    keywords={rewards,endrewards},
+    otherkeywords={0,1,2,3,4,5,6,7,8,9},
+    morekeywords=[2]{kA,kB,receiveA,receiveB,phase,party,n,b,N,L,K},
+    keywordstyle=\color{blue},
+    keywordstyle=[2]\color{red},
+    sensitive=false,
+    morecomment=[l]{//},
+    morestring=[b]",
+    morestring=[r]'
+  }
+
+\lstset{
+  frame=t,
+  language=prism,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\title{Probabilistic Model Checking - Practical 4}
+\date{}
+\begin{document}
+\maketitle
+
+\section {}
+\lstinputlisting[caption=4 Philosophers]{lr4.nm}
+\clearpage
+\lstinputlisting[caption=5 Philosophers]{lr5.nm}
+
+\section{}
+
+\begin{figure}[H]
+  \caption{E[Lost requests for T\leq20]}
+  \centering
+	\includegraphics[width=1\textwidth]{expected_lost_requests_T20.png}
+\end{figure}
+
+\section{}
+
+\begin{lstlisting}[caption="Reward structure for expected time"]
+// Formula defined for properties
+// all philosophers are thinking
+label "think" = ((p1=0)&(p2=0)&(p3=0));
+
+rewards "time_passed"
+	true : 1;
+endrewards
+\end{lstlisting}
+
+\begin{lstlisting}[caption="Properties for minimum and maximum expected time to eating", language=pctl]
+filter(state, R{"time_passed"}min=? [F "eat"], "think")
+
+filter(state, R{"time_passed"}max=? [F "eat"], "think")
+\end{lstlisting}
+
+Results for LR3:
+  Minimum expected time: 4.0
+  Maximum expected time: 26.99955...
+
+Results for LR4:
+  Minimum expected time: 4.0
+  Maximum expected time: 36.99952...
+
+Strategy that achieves the minimum expected time of 4.0:
+    - p1=0 => p1=1 (Philosopher 1 stops thinking)
+    - p1=1 => p1=2 (Philosopher 1 picks up left)
+    - p1=2 => p1=4 (Philosopher 1 picks up right fork)
+    - p1=4 => p1=8 (Philosopher is eating)
+
+\end{document}
+
